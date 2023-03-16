@@ -1,7 +1,7 @@
 # Личный проект «TaskForce»
 
 * Студент: [Dmitriy Kozlov](https://up.htmlacademy.ru/nodejs-2/3/user/912453).
-* Наставник: `Неизвестно`.
+* Наставник: [Михаил Кислый](https://htmlacademy.ru/profile/smart-grizzly).
 
 ---
 
