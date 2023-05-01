@@ -22,6 +22,12 @@ export class CreateUserDto {
   public name: string;
 
   @ApiProperty({
+    description: 'About user',
+    example: 'Cat',
+  })
+  public about?: string;
+
+  @ApiProperty({
     enum: City,
     description: 'User city',
     example: 'Санкт-Петербург',

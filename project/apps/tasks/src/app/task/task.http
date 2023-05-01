@@ -1,0 +1,27 @@
+# Create a new user
+POST http://localhost:3001/api/task/new
+Content-Type: application/json
+
+{
+  "title": "Нужно починить кран и вкутить лампочки.",
+  "description": "Вода капает (бесит), и темно как в ж..",
+  "categoryId": 1234456,
+  "price": 100,
+  "dueDate": "2023-05-14",
+  "image": "photo.jpg",
+  "address": "ул. Улица, дом 1, к2, кв3",
+  "tagsId": [
+    "сантехника",
+    "электрика",
+    "разовая",
+    "опасная"
+  ],
+  "city": "Санкт-Петербург"
+}
+
+###
+
+# Get user by ID
+GET http://localhost:3333/api/auth/7aef6925-4fe5-4057-b5cc-cc7cf214df05 HTTP/1.1
+
+###

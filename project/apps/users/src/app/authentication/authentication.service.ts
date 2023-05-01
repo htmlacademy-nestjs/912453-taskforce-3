@@ -14,10 +14,10 @@ export class AuthenticationService {
   ) {}
 
   public async register(dto: CreateUserDto): Promise<UserInterface> {
-    const {email, name, role, password, city, dateBirth, avatar} = dto;
+    const {email, name, about, role, password, city, dateBirth, avatar} = dto;
 
     const user = {
-      email, name, role, city,
+      email, name, role, city, about,
       avatar: avatar || '',
       dateBirth: dayjs(dateBirth).toDate(),
       passwordHash: ''
