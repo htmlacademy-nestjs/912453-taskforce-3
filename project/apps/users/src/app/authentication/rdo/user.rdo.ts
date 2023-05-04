@@ -1,13 +1,14 @@
-import { Expose } from 'class-transformer';
+import {Expose, Transform} from 'class-transformer';
 import { City, UserRole } from '@project/shared/app-types';
 import {ApiProperty} from '@nestjs/swagger';
 
 export class UserRdo {
   @ApiProperty({
     description: 'The uniq user ID',
-    example: '13'
+    example: '6452cc0aca1c20d9c0b140ee'
   })
   @Expose({ name: '_id'})
+  @Transform(({obj}) => obj._id.toString())
   public id: string;
 
   @ApiProperty({
