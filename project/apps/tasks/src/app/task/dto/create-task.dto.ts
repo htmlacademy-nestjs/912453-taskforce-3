@@ -17,10 +17,10 @@ export class CreateTaskDto {
   public description: string;
 
   @ApiProperty({
-    description: 'Уникальный id категории.',
-    example: '1234456'
+    description: 'Название категории.',
+    example: 'Ремонт'
   })
-  public categoryId: number;
+  public categoryName: string;
 
   @ApiProperty({
     description: 'Неотрицательное число. Сумма может быть произвольной, в том числе и нулём.',
@@ -30,7 +30,7 @@ export class CreateTaskDto {
 
   @ApiProperty({
     description: 'Валидная дата для выполнения задания. Выбранная дата исполнения не может быть меньше текущей даты.',
-    example: '2023-05-14'
+    example: '2023-05-09T08:53:59.127Z'
   })
   public dueDate?: Date;
 
@@ -50,11 +50,11 @@ export class CreateTaskDto {
     description: 'Список тегов к заданию.',
     example: ['сантехника', 'электрика', 'разовая', 'опасная']
   })
-  tagsId?: string[];
+  tags?: string[];
 
   @ApiProperty({
-    description: 'Один город из списка: Москва, Санкт-Петербург, Владивосток.',
-    example: 'Санкт-Петербург'
+    description: 'Один город из списка: Moscow, SaintPetersburg, Vladivostok.',
+    example: 'Moscow'
   })
   public city: City;
 }

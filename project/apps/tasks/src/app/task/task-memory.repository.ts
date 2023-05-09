@@ -6,7 +6,7 @@ import {TaskEntity} from './task.entity';
 import {TasksQuery} from './tasks-query';
 
 @Injectable()
-export class TaskMemoryRepository implements CRUDRepositoryInterface<TaskEntity, string, TaskInterface> {
+export class TaskMemoryRepository implements CRUDRepositoryInterface<TaskEntity, number, TaskInterface> {
   private repository: {[key: string]: TaskInterface} = {};
 
   public async create(item: TaskEntity): Promise<TaskInterface> {
@@ -15,7 +15,7 @@ export class TaskMemoryRepository implements CRUDRepositoryInterface<TaskEntity,
     return entry;
   }
 
-  public async findById(id: string): Promise<TaskInterface | null> {
+  public async findById(id: number): Promise<TaskInterface | null> {
     return {...this.repository[id]} ?? null;
   }
 
@@ -23,18 +23,13 @@ export class TaskMemoryRepository implements CRUDRepositoryInterface<TaskEntity,
     console.log(query); //Todo - обработка запроса, может быть средствами СУБД
     return Object.values(this.repository);
   }
-  // Пока не знаю, нужны ли такие методы, фильтр может быть составной,
-  // может потребуется для метода find
-  // public async findByTags(tag: string): Promise<TaskInterface | null> {}
-  // public async findByCategory(categoryId: string): Promise<TaskInterface | null> {}
-  // public async findByCity(city: City): Promise<TaskInterface | null> {}
 
-  public async destroy(id: string): Promise<void> {
+  public async destroy(id: number): Promise<void> {
     delete this.repository[id];
   }
 
-  public async update(id: string, item: TaskEntity): Promise<TaskInterface> {
-    this.repository[id] = {...item.toObject(), _id: id};
+  public async update(id: number, item: TaskEntity): Promise<TaskInterface> {
+    this.repository[id] = {...item.toObject(), id: id};
     return this.findById(id);
   }
 }

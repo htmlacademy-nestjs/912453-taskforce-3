@@ -1,47 +1,65 @@
-import {City, TaskInterface, TaskStatus} from '@project/shared/app-types';
-import dayjs from 'dayjs';
+import {
+  CategoryInterface,
+  CommentInterface, TagInterface,
+  TaskInterface,
+  ResponseInterface,
+} from '@project/shared/app-types';
+import {EntityInterface} from '@project/util/util-types';
+import {City, TaskStatus} from '@prisma/client';
 
-export class TaskEntity implements TaskInterface {
-  public _id?: string;
+export class TaskEntity implements EntityInterface<TaskEntity>, TaskInterface {
+  public id: number;
   public title: string;
   public description: string;
-  public categoryId: number;
-  public price?: number;
+  public category: CategoryInterface;
+  public price: number;
   public dueDate?: Date;
   public image?: string;
   public address?: string;
-  public tagsId?: string[];
+  public tags: TagInterface[];
+  public comments: CommentInterface[];
+  public responses: ResponseInterface[];
   public city: City;
   public userId: string;
-  public createdAt: Date = dayjs().toDate();
-  public status: TaskStatus = TaskStatus.New;
-  public responses: string[] = [];
-  public responsesCount: number;
-  public commentsCount: number;
-  public contractorId: string;
+  public contractorId?: string;
+  public createdAt?: Date;
+  public updatedAt?: Date;
+  public status: TaskStatus;
+  public responsesCount?: number;
+  public commentsCount?: number;
 
   constructor(task: TaskInterface) {
     this.fillEntity(task);
-    this.createdAt = dayjs().toDate();
-  this.responsesCount = 0;
-  this.commentsCount = 0;
   }
 
   public toObject() {
-    return {...this};
+    return {
+      ...this,
+      tags: [...this.tags],
+      responses: [...this.responses],
+      comments: [...this.comments]
+    }
   }
 
   public fillEntity(task: TaskInterface) {
-  this._id = task._id;
+  this.id = task.id;
   this.title = task.title;
   this.description = task.description;
-  this.categoryId = task.categoryId;
+  this.category = task.category;
   this.price = task.price;
   this.dueDate = task.dueDate;
   this.image = task.image;
   this.address = task.address;
-  this.tagsId = task.tagsId;
+  this.tags = task.tags;
+  this.comments = task.comments;
+  this.responses = task.responses;
   this.city = task.city;
   this.userId = task.userId;
+  this.contractorId = task.contractorId;
+  this.createdAt = task.createdAt;
+  this.updatedAt = task.updatedAt;
+  this.status = task.status;
+  this.responsesCount = task.responsesCount;
+  this.commentsCount = task.commentsCount;
   }
 }

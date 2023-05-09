@@ -21,7 +21,8 @@ export class TaskController {
   @Post('new')
   public async create(@Body() dto: CreateTaskDto) {
     const userId = '123421341234' // Пока тут заглушка, пданные ользователя будем вытаскивать из токена
-    const newTask = await this.taskService.create(dto, userId);
+    const newTask = await this.taskService.createTask(dto, userId);
+    console.log(newTask);
     return fillObject(TaskRdo, newTask);
   }
 
@@ -32,7 +33,8 @@ export class TaskController {
   })
   @Get('/:id')
   async show(@Param('id') id: string) {
-    const existTask = await this.taskService.getTask(id);
+    const taskId = parseInt(id, 10);
+    const existTask = await this.taskService.getTask(taskId);
     return fillObject(TaskRdo, existTask);
   }
 

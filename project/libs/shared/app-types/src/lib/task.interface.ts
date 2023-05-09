@@ -1,20 +1,28 @@
-import {City, TaskStatus} from '@project/shared/app-types';
+import {
+  CategoryInterface,
+  CommentInterface,
+  TagInterface,
+  ResponseInterface,
+} from '@project/shared/app-types';
+import {City, TaskStatus} from '@prisma/client';
 
 export interface TaskInterface {
-  _id?: string;
+  id?: number;
   title: string;
   description: string;
-  categoryId: number;
+  category?: CategoryInterface;
   price?: number;
   dueDate?: Date;
   image?: string;
   address?: string;
-  tagsId?: string[];
+  tags?: TagInterface[];
+  comments?: CommentInterface[];
   city: City;
   userId: string;
   createdAt?: Date;
+  updatedAt?: Date;
   status?: TaskStatus;
-  responses?: string[];
+  responses?: ResponseInterface[];
   responsesCount?: number;
   commentsCount?: number;
   contractorId?: string;
