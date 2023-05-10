@@ -3,6 +3,14 @@ import {Expose} from 'class-transformer';
 
 export class CommentRdo {
   @ApiProperty({
+    description: 'Уникальный идентификатор комментария',
+    example: '2',
+    required: true
+  })
+  @Expose()
+  public commentId: string;
+
+  @ApiProperty({
     description: 'Новый комментарий. Минимальная длина: 10 символов, максимальная: 300.',
     example: 'Что за тяги такие, бархатные тяги, ребята? Уффф. Кефтеме',
     required: true
@@ -32,5 +40,5 @@ export class CommentRdo {
     required: true
   })
   @Expose()
-  public publicDate: Date;
+  public createdAt: Date;
 }

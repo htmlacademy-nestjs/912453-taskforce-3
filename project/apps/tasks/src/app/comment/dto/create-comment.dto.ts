@@ -10,8 +10,15 @@ export class CreateCommentDto {
 
   @ApiProperty({
     description: 'Уникальный Id задачи',
-    example: 'ec490a56-d2a4-4ddb-b3e2-f3d6fd65ecb1',
+    example: 1,
     required: true
   })
-  public taskId: string;
+  public taskId: number;
+
+  @ApiProperty({
+    description: 'Уникальный Id пользователя',
+    example: 1,
+    required: true
+  })
+  public userId: string;
 }

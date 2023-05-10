@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  taskId         Int        @id @default(autoincrement()) @map("task_id")
+  title          String     @default("")
+  description    String     @default("")
+  category       Category   @relation(fields: [categoryId], references: [categoryId])
+  categoryId     Int        @map("category_id")
+  price          Int?        @default(0)
+  dueDate        DateTime?
+  image          String?     @default("")
+  address        String?     @default("")
+  tags           Tag[]
+  comments       Comment[]
+  responses      Response[]
+  city           City
+  userId         String     @map("user_id")
+  contractorId   String?     @default("") @map("contracror_id")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt  @map("publish_at")
+  status         TaskStatus
+  responsesCount Int?        @default(0) @map("responses_count")
+  commentsCount  Int?        @default(0) @map("comments_count")
+
+  @@map("tasks")
+}
+
+model Category {
+  categoryId     Int        @id @default(autoincrement()) @map("category_id")
+  title          String     @unique
+  tasks          Task[]
+
+  @@map("categories")
+}
+
+model Comment {
+  commentId     Int        @id @default(autoincrement()) @map("comment_id")
+  comment       String
+  task          Task       @relation(fields: [taskId], references: [taskId], onDelete: Cascade, onUpdate: Cascade)
+  taskId        Int        @map("task_id")
+  userId        String     @map("user_id")
+  createdAt     DateTime   @default(now()) @map("created_at")
+
+  @@map("comments")
+}
+
+model Tag {
+  tagId     Int            @id @default(autoincrement()) @map("tag_id")
+  name      String         @unique
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  tasks     Task[]
+
+  @@map("tags")
+}
+
+model Response {
+  responseId    Int        @id @default(autoincrement()) @map("response_id")
+  offerPrice    Int
+  task          Task       @relation(fields: [taskId], references: [taskId])
+  taskId        Int        @map("task_id")
+  contractorId  String     @map("contractor_id")
+  createdAt     DateTime   @default(now()) @map("created_at")
+
+  @@map("responses")
+}
+
+enum City {
+  Moscow
+  SaintPetersburg
+  Vladivostok
+}
+
+enum TaskStatus {
+  New
+  Canceled
+  InProgress
+  Completed
+  Failed
+}

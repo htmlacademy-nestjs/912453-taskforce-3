@@ -1,6 +1,6 @@
-import {Expose} from 'class-transformer';
+import {Expose, Transform} from 'class-transformer';
 import {ApiProperty} from '@nestjs/swagger';
-import {CategoryInterface, City, TaskStatus} from '@project/shared/app-types';
+import {CategoryInterface, City, TagInterface, TaskStatus} from '@project/shared/app-types';
 
 export class TaskRdo {
   @ApiProperty({
@@ -8,7 +8,7 @@ export class TaskRdo {
     example: 12334546
   })
   @Expose()
-  public _id: number;
+  public taskId: number;
 
   @ApiProperty({
     description: 'Заголовок.',
@@ -61,10 +61,11 @@ export class TaskRdo {
 
   @ApiProperty({
     description: 'Список тегов к заданию. ',
-    example: ['сантехника', 'электрика', 'разовая', 'опасная']
+    example: ['сантехника', 'электрика', 'разовая', 'опасная'],
   })
   @Expose()
-  public tagsId: string[];
+  @Transform(({ value }) => value.map((tag) => tag.name))
+  public tags: TagInterface[];
 
   @ApiProperty({
     description: 'Один город из списка: Москва, Санкт-Петербург, Владивосток.',
@@ -85,7 +86,7 @@ export class TaskRdo {
     example: ''
   })
   @Expose()
-  public responses: number;
+  public responsesCont: number;
 
   @ApiProperty({
     description: 'Количество комментариев.',
