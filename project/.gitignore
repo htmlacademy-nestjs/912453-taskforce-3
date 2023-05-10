@@ -41,5 +41,8 @@ Thumbs.db
 # Environments
 *.env
 
+**/uploads/*
+!.gitkeep
+
 #Data
 data
