@@ -1,18 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {CreateCommentDto} from './dto/create-comment.dto';
 import {CommentInterface} from '@project/shared/app-types';
 import dayjs from 'dayjs';
 import {CommentEntity} from './comment.entity';
 import {CommentRepository} from './comment.repository';
+import {TaskService} from '../task/task.service';
 
 @Injectable()
 export class CommentService {
   constructor(
-    private readonly commentRepository: CommentRepository
+    private readonly commentRepository: CommentRepository,
+    private readonly taskService: TaskService
   ) {}
 
-  public async create(dto: CreateCommentDto, userId: string): Promise<CommentInterface> {
-    const {comment, taskId} = dto;
+  public async create(dto: CreateCommentDto): Promise<CommentInterface> {
+    const {comment, taskId, userId} = dto;
     const newComment = {
       comment, taskId,
       createdAt: dayjs().toDate(),
@@ -20,7 +22,7 @@ export class CommentService {
     };
 
     const commentEntity = await new CommentEntity(newComment);
-
+    await this.taskService.incrementCommentsCounter(taskId, +1);
     return this.commentRepository.create(commentEntity);
   }
 
@@ -29,7 +31,10 @@ export class CommentService {
   }
 
   public async deleteComment(id: number): Promise<void> {
-    return await this.commentRepository.destroy(id);
+    const comment = await this.commentRepository.findById(id)
+    const taskId = comment.taskId;
+    await this.commentRepository.destroy(id);
+    await this.taskService.incrementCommentsCounter(taskId, -1);
   }
 
   public async deleteAllCommentsWithTask(taskId: number): Promise<void> {

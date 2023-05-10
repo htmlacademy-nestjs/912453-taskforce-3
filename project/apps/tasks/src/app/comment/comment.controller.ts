@@ -1,6 +1,6 @@
 import {Body, Controller, Get, HttpStatus, Param, Post, Delete} from '@nestjs/common';
 import {CommentService} from './comment.service';
-import {ApiParam, ApiProperty, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {fillObject} from '@project/util/util-core';
 import {CreateCommentDto} from './dto/create-comment.dto';
 import {CommentRdo} from './rdo/comment.rdo';
@@ -20,8 +20,7 @@ export class CommentController {
   @Post('new')
   public async create(@Body() dto: CreateCommentDto) {
       console.log('comment dto in controller: ', dto);
-      const userId = '1' // Пока тут заглушка, пданные ользователя будем вытаскивать из токена
-      const newComment = await this.commentService.create(dto, userId);
+      const newComment = await this.commentService.create(dto);
       return fillObject(CommentRdo, newComment);
     }
 

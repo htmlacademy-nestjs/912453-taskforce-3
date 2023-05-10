@@ -17,10 +17,10 @@ export class UpdateTaskDto {
   public description?: string;
 
   @ApiProperty({
-    description: 'Уникальный id категории.',
-    example: '1234456'
+    description: 'Название категории.',
+    example: 'Ремонт'
   })
-  public categoryId?: number;
+  public categoryName: string;
 
   @ApiProperty({
     description: 'Неотрицательное число. Сумма может быть произвольной, в том числе и нулём.',

@@ -20,7 +20,7 @@ export class CreateTaskDto {
     description: 'Название категории.',
     example: 'Ремонт'
   })
-  public categoryName: string;
+  public category: string;
 
   @ApiProperty({
     description: 'Неотрицательное число. Сумма может быть произвольной, в том числе и нулём.',
@@ -30,7 +30,7 @@ export class CreateTaskDto {
 
   @ApiProperty({
     description: 'Валидная дата для выполнения задания. Выбранная дата исполнения не может быть меньше текущей даты.',
-    example: '2023-05-09T08:53:59.127Z'
+    example: '2023-05-09'
   })
   public dueDate?: Date;
 
@@ -57,4 +57,10 @@ export class CreateTaskDto {
     example: 'Moscow'
   })
   public city: City;
+
+@ApiProperty({
+  description: 'Уникальный идентификатор пользователя.',
+  example: '123456'
+})
+public userId: string;
 }

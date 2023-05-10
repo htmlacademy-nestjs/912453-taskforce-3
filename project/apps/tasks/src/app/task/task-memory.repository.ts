@@ -3,7 +3,7 @@ import {TaskInterface} from '@project/shared/app-types';
 import * as crypto from 'crypto';
 import {Injectable} from '@nestjs/common';
 import {TaskEntity} from './task.entity';
-import {TasksQuery} from './tasks-query';
+import {TaskQuery} from './task-query';
 
 @Injectable()
 export class TaskMemoryRepository implements CRUDRepositoryInterface<TaskEntity, number, TaskInterface> {
@@ -19,7 +19,7 @@ export class TaskMemoryRepository implements CRUDRepositoryInterface<TaskEntity,
     return {...this.repository[id]} ?? null;
   }
 
-  public async find(query: TasksQuery): Promise<TaskInterface[]> {
+  public async find(query: TaskQuery): Promise<TaskInterface[]> {
     console.log(query); //Todo - обработка запроса, может быть средствами СУБД
     return Object.values(this.repository);
   }

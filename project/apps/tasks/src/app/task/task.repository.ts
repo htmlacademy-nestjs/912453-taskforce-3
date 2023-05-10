@@ -1,49 +1,36 @@
 import {CRUDRepositoryInterface} from '@project/util/util-types';
-import {TaskInterface} from '@project/shared/app-types';
+import {TaskInterface, TaskStatus} from '@project/shared/app-types';
 import {Injectable} from '@nestjs/common';
 import {TaskEntity} from './task.entity';
 import {PrismaService} from '../prisma/prisma.service';
+import {TaskQuery} from './task-query';
+import {TagService} from '../tag/tag.service';
 
 @Injectable()
 export class TaskRepository implements CRUDRepositoryInterface<TaskEntity, number, TaskInterface> {
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly tagService: TagService
+    ) {
   }
 
   public async create(item: TaskEntity): Promise<TaskInterface> {
     const entityData = item.toObject();
+    console.log(item);
     const tagIds = entityData.tags.map((tag) => ({tagId: tag.tagId}));
     return this.prisma.task.create({
       data: {
-        title: entityData.title,
-        description: entityData.description,
-        price: entityData.price,
-        dueDate: entityData.dueDate,
-        image: entityData.image,
-        address: entityData.address,
-        city: entityData.city,
-        userId: entityData.userId,
-        contractorId: entityData.contractorId,
-        status: entityData.status,
-        responsesCount: entityData.responsesCount,
-        commentsCount: entityData.commentsCount,
-        comments: {
-          connect: []
-        },
-        category: {
-          connect: {categoryId: entityData.category.categoryId}
-        },
-        tags: {
-          connect: tagIds
-        },
-        responses: {
-          connect: []
-        }
+        ...entityData,
+        comments: {connect:[]},
+        tags: {connect: tagIds},
+        responses: {connect: []}
       },
-      include: {
-        tags: true,
-        comments: true,
-        responses: true
-      }
+        include: {
+          category: true,
+          tags: true,
+          comments: true,
+          responses: true
+        }
     });
   }
 
@@ -72,8 +59,34 @@ export class TaskRepository implements CRUDRepositoryInterface<TaskEntity, numbe
     });
   }
 
-  public find(): Promise<TaskInterface[]> {
+  public async find(query?: TaskQuery): Promise<TaskInterface[]> {
+    const {limit, sortDirection, sortType, page, city, categoryId, status, tag, userId, contractorId} = query;
+    const existingTag = await this.tagService.findByName(tag);
     return this.prisma.task.findMany({
+      where: {
+        status, city, userId, contractorId, categoryId,
+        tags: {...(existingTag ? { some: { name: existingTag.name } } : {})}
+      },
+      include: {
+        category: true,
+        comments: true,
+        tags: true,
+        responses: true
+      },
+      orderBy: [{ [sortType]: sortDirection }],
+      take: limit,
+      skip: page > 0 ? limit * (page - 1) : undefined
+    });
+  }
+
+  public async update(taskId: number, item: TaskEntity) {
+    return Promise.resolve(undefined);
+  }
+
+  public async setAcceptedResponse(taskId: number, contractorId: string, price?: number) {
+    return this.prisma.task.update({
+      where: {taskId},
+      data: {contractorId, price},
       include: {
         category: true,
         comments: true,
@@ -83,7 +96,31 @@ export class TaskRepository implements CRUDRepositoryInterface<TaskEntity, numbe
     });
   }
 
-  public update(id: number, item: TaskEntity): Promise<TaskInterface> {
-    return Promise.resolve(undefined);
+  public async updateCommentsCounter(taskId: number, commentsCount: number) {
+    this.prisma.task.update({
+      where: {taskId},
+      data: {commentsCount},
+    });
   }
+  public async updateResponsesCounter(taskId: number, responsesCount: number) {
+    this.prisma.task.update({
+      where: {taskId},
+      data: {responsesCount},
+    });
+  }
+
+  updateTaskStatus(taskId: number, status: TaskStatus) {
+    return this.prisma.task.update({
+      where: {taskId},
+      data: {status},
+      include: {
+        category: true,
+        comments: true,
+        tags: true,
+        responses: true
+      }
+    });
+  }
+
+
 }

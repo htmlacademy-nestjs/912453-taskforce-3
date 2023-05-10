@@ -2,6 +2,6 @@ export enum TaskStatus {
   New = 'New',
   Canceled = 'Canceled',
   InProgress = 'InProgress',
-  Done = 'Done',
+  Completed = 'Completed',
   Failed = 'Failed'
 }

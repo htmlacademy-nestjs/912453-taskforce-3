@@ -14,4 +14,11 @@ export class CreateCommentDto {
     required: true
   })
   public taskId: number;
+
+  @ApiProperty({
+    description: 'Уникальный Id пользователя',
+    example: 1,
+    required: true
+  })
+  public userId: string;
 }

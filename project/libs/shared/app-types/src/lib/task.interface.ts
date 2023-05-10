@@ -10,20 +10,21 @@ export interface TaskInterface {
   id?: number;
   title: string;
   description: string;
-  category?: CategoryInterface;
+  // category?: CategoryInterface;
+  categoryId: number;
   price?: number;
   dueDate?: Date;
   image?: string;
   address?: string;
   tags?: TagInterface[];
   comments?: CommentInterface[];
+  responses?: ResponseInterface[];
   city: City;
   userId: string;
+  contractorId?: string;
   createdAt?: Date;
   updatedAt?: Date;
   status?: TaskStatus;
-  responses?: ResponseInterface[];
   responsesCount?: number;
   commentsCount?: number;
-  contractorId?: string;
 }

@@ -44,8 +44,7 @@ export class ResponseController {
   })
   @Post('/')
   async create(@Body() dto: CreateResponseDto) {
-    const userId = 'asdfaf'; // todo - find and check current user id
-    const newResponse = this.responseService.createResponse(dto, userId);
+    const newResponse = this.responseService.createResponse(dto);
     return fillObject(ResponseRdo, newResponse);
   }
 
@@ -58,7 +57,7 @@ export class ResponseController {
   async acceptResponse(@Param('id') id: string) {
     // todo - check user role and authority
     const responseId = parseInt(id, 10);
-    const acceptedResponse = this.responseService.acceptResponse(responseId);
+    const acceptedResponse = await this.responseService.acceptResponse(responseId);
     return fillObject(ResponseRdo, acceptedResponse);
   }
 }

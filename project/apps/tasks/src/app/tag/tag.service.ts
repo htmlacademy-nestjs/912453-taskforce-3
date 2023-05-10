@@ -19,8 +19,12 @@ export class TagService {
     await this.tagRepository.destroy(id);
   }
 
-  async getTag(id: number): Promise<TagInterface> {
+  async getTag(id: number): Promise<TagInterface | null> {
     return this.tagRepository.findById(id);
+  }
+
+  async findByName(name: string): Promise<TagInterface | null> {
+    return this.tagRepository.findByName(name);
   }
 
   async findOrCreate(name: string): Promise<TagInterface> {

@@ -7,3 +7,4 @@ export * from './lib/category.interface';
 export * from './lib/comment.interface';
 export * from './lib/tag.interface';
 export * from './lib/response.interface';
+export * from './lib/sort-type.enum';

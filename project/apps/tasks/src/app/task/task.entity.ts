@@ -1,19 +1,19 @@
 import {
-  CategoryInterface,
   CommentInterface, TagInterface,
   TaskInterface,
   ResponseInterface,
 } from '@project/shared/app-types';
 import {EntityInterface} from '@project/util/util-types';
 import {City, TaskStatus} from '@prisma/client';
+import dayjs from 'dayjs';
 
 export class TaskEntity implements EntityInterface<TaskEntity>, TaskInterface {
   public id: number;
   public title: string;
   public description: string;
-  public category: CategoryInterface;
+  public categoryId: number;
   public price: number;
-  public dueDate?: Date;
+  public dueDate: Date;
   public image?: string;
   public address?: string;
   public tags: TagInterface[];
@@ -42,12 +42,11 @@ export class TaskEntity implements EntityInterface<TaskEntity>, TaskInterface {
   }
 
   public fillEntity(task: TaskInterface) {
-  this.id = task.id;
   this.title = task.title;
   this.description = task.description;
-  this.category = task.category;
+  this.categoryId = task.categoryId;
   this.price = task.price;
-  this.dueDate = task.dueDate;
+  this.dueDate = task.dueDate ? dayjs(task.dueDate).toDate() : dayjs().toDate();
   this.image = task.image;
   this.address = task.address;
   this.tags = task.tags;
