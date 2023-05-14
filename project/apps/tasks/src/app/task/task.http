@@ -3,8 +3,8 @@ POST http://localhost:3001/api/task/new
 Content-Type: application/json
 
 {
-  "title": "9Нужно починить кран и вкутить лампочки.",
-  "description": "fefseВода капает (бесит), и темно как в ж..",
+  "title": "Нужно починить кран и вкутить лампочки.",
+  "description": "Вода капает (бесит), и темно как в ж..",
   "category": "Ремонт4",
   "price": 100,
   "dueDate": "2023-05-09",
