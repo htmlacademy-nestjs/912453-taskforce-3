@@ -1,13 +1,14 @@
 import {ConflictException, Inject, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
-import {UserInterface} from '@project/shared/app-types';
+import {TokenPayloadInterface, UserInterface} from '@project/shared/app-types';
 import dayjs from 'dayjs';
-import {AUTH_USER_EXISTS, AUTH_USER_NOT_FOUND, AUTH_USER_PASSWORD_WRONG} from './authentication.constant';
+import {USER_EXCEPTIONS} from './authentication.constant';
 import {UserEntity} from '../user/user.entity';
 import {LoginUserDto} from './dto/login-user.dto';
 import {dbConfig} from '@project/config/config-users';
 import {ConfigType} from '@nestjs/config';
 import {UserRepository} from '../user/user.repository';
+import {JwtService} from '@nestjs/jwt';
 
 @Injectable()
 export class AuthenticationService {
@@ -16,11 +17,8 @@ export class AuthenticationService {
 
     @Inject(dbConfig.KEY)
     private readonly databaseConfig: ConfigType<typeof dbConfig>,
-  ) {
-    // Извлекаем настройки из конфигурации
-    console.log(databaseConfig.host);
-    console.log(databaseConfig.user);
-  }
+    private readonly jwtService: JwtService,
+  ) {}
 
   public async register(dto: CreateUserDto): Promise<UserInterface> {
     const {email, name, about, role, password, city, dateBirth, avatar} = dto;
@@ -36,7 +34,7 @@ export class AuthenticationService {
       .findByEmail(email);
 
     if (existUser) {
-      throw new ConflictException(AUTH_USER_EXISTS);
+      throw new ConflictException(USER_EXCEPTIONS.UserEmailExist);
     }
 
     const userEntity = await new UserEntity(user)
@@ -51,12 +49,12 @@ export class AuthenticationService {
     const existUser = await this.userRepository.findByEmail(email);
 
     if (!existUser) {
-      throw new NotFoundException(AUTH_USER_NOT_FOUND);
+      throw new NotFoundException(USER_EXCEPTIONS.UserNotFound);
     }
 
     const userEntity = new UserEntity(existUser);
     if (!await userEntity.comparePassword(password)) {
-      throw new UnauthorizedException(AUTH_USER_PASSWORD_WRONG);
+      throw new UnauthorizedException(USER_EXCEPTIONS.UserPasswordWrong);
     }
 
     return userEntity.toObject();
@@ -64,5 +62,18 @@ export class AuthenticationService {
 
   public async getUser(id: string) {
     return this.userRepository.findById(id);
+  }
+
+  public async createUserToken(user: UserInterface) {
+    const payload: TokenPayloadInterface = {
+      sub: user._id,
+      email: user.email,
+      role: user.role,
+      name: user.name
+    };
+
+    return {
+      accessToken: await this.jwtService.signAsync(payload),
+    }
   }
 }

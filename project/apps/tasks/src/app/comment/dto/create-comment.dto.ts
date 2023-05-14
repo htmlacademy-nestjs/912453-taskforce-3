@@ -1,4 +1,6 @@
 import {ApiProperty} from '@nestjs/swagger';
+import {IsNumber, IsString} from 'class-validator';
+import {Transform} from 'class-transformer';
 
 export class CreateCommentDto {
   @ApiProperty({
@@ -6,6 +8,8 @@ export class CreateCommentDto {
     example: 'Что за тяги такие, бархатные тяги, ребята? Уффф. Кефтеме',
     required: true
   })
+  @IsString()
+
   public comment: string;
 
   @ApiProperty({
@@ -13,6 +17,8 @@ export class CreateCommentDto {
     example: 1,
     required: true
   })
+  @IsNumber()
+  @Transform(({ value } ) => +value)
   public taskId: number;
 
   @ApiProperty({

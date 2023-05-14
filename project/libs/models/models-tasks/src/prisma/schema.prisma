@@ -25,10 +25,10 @@ model Task {
   comments       Comment[]
   responses      Response[]
   city           City
-  userId         String     @map("user_id")
+  userId         String      @map("user_id")
   contractorId   String?     @default("") @map("contracror_id")
-  createdAt      DateTime   @default(now()) @map("created_at")
-  updatedAt      DateTime   @updatedAt  @map("publish_at")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt  @map("publish_at")
   status         TaskStatus
   responsesCount Int?        @default(0) @map("responses_count")
   commentsCount  Int?        @default(0) @map("comments_count")
