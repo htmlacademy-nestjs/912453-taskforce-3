@@ -15,7 +15,7 @@ Content-Type: application/json
 
 # Get user by ID
 GET http://localhost:3000/api/auth/645fc8ae8995b48872194347 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDVmYzhhZTg5OTViNDg4NzIxOTQzNDciLCJlbWFpbCI6Imtla3NAZ21haWwuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwibmFtZSI6Iktla3MiLCJpYXQiOjE2ODQwNDgxNzksImV4cCI6MTY4NDA0ODc3OX0.8TQF_h2espmw59xa5lkOWpnJ4qKqGbRqAWfDanBnZOs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDVmYzhhZTg5OTViNDg4NzIxOTQzNDciLCJlbWFpbCI6Imtla3NAZ21haWwuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwibmFtZSI6Iktla3MiLCJpYXQiOjE2ODQwOTY3MDUsImV4cCI6MTY4NDA5NzMwNX0.6D2a_DqIEutJ6cy_N3iHpXiQeY2TYRHB0OKpYBEuOkI
 
 ###
 
@@ -27,5 +27,11 @@ Content-Type: application/json
   "email": "keks@gmail.com",
   "password": "qwerty"
 }
+
+###
+
+# Get new JWT pair
+POST http://localhost:3000/api/auth/refresh HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDVmYzhhZTg5OTViNDg4NzIxOTQzNDciLCJlbWFpbCI6Imtla3NAZ21haWwuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwibmFtZSI6Iktla3MiLCJ0b2tlbklkIjoiYWU3MTY5ZjItODVlMS00MjcwLWEyYmItZjAzNDNjNWJlZjViIiwiaWF0IjoxNjg0MTI5MzA0LCJleHAiOjE2ODQ1NjEzMDR9.f_yI62b4DbPs1eT7swiJj9yLAuNHHkJmN8f0cFqSatI
 
 ###
