@@ -1,17 +1,20 @@
-import {Post, Body, Controller, Param, Get, UseGuards, Req, HttpStatus, HttpCode} from '@nestjs/common';
+import {Post, Body, Controller, Param, Get, UseGuards, Req, Patch, HttpStatus, HttpCode} from '@nestjs/common';
 import {AuthenticationService} from './authentication.service';
 import {fillObject} from '@project/util/util-core';
 import {UserRdo} from './rdo/user.rdo';
 import {CreateUserDto} from './dto/create-user.dto';
-// import {LoginUserDto} from './dto/login-user.dto';
 import {LoggedUserRdo} from './rdo/logged-user.rdo';
 import {ApiResponse, ApiTags} from '@nestjs/swagger';
 import {MongoidValidationPipe} from '@project/shared/shared-pipes';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import {NotifyService} from '../notify/notify.service';
 import {LocalAuthGuard} from './guards/local-auth-guard';
-import {RequestWithUser} from '@project/shared/app-types';
+import {RequestWithUser, UserRole} from '@project/shared/app-types';
 import {JwtRefreshGuard} from './guards/jwt-refresh.guard';
+import {CustomerUserRdo} from './rdo/customer-user.rdo';
+import {ContractorUserRdo} from './rdo/contractor-user.rdo';
+import {ChangeUserPasswordDto} from './dto/change-user-password.dto';
+import {UpdateUserDto} from './dto/update-user.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -25,12 +28,21 @@ export class AuthenticationController {
     status: HttpStatus.CREATED,
     description: 'The new user has been successfully created.'
   })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'User already exists.'
+  })
   @Post('register')
   public async create(@Body() dto: CreateUserDto) {
     const newUser = await this.authService.register(dto);
-    const { email, name } = newUser;
+    const { email, name, role } = newUser;
     await this.notifyService.registerSubscriber({ email, name })
-    return fillObject(UserRdo, newUser);
+
+    if (role === UserRole.Customer) {
+      return fillObject(CustomerUserRdo, newUser);
+    } else if (role === UserRole.Contractor) {
+      return fillObject(ContractorUserRdo, newUser);
+    }
   }
 
   @UseGuards(LocalAuthGuard)
@@ -47,11 +59,6 @@ export class AuthenticationController {
   public async login(@Req() { user }: RequestWithUser) {
     return this.authService.createUserToken(user);
   }
-  // public async login(@Body() dto: LoginUserDto) {
-  //   const verifiedUser = await this.authService.verifyUser(dto);
-  //   const loggedUser = await this.authService.createUserToken(verifiedUser);
-  //   return fillObject(LoggedUserRdo, Object.assign(verifiedUser, loggedUser));
-  // }
 
   @ApiResponse({
     type: UserRdo,
@@ -60,7 +67,11 @@ export class AuthenticationController {
   @Get(':id')
   public async show(@Param('id', MongoidValidationPipe) id: string) {
     const existUser = await this.authService.getUser(id);
-    return fillObject(UserRdo, existUser);
+    if (existUser.role === UserRole.Customer) {
+      return fillObject(CustomerUserRdo, existUser);
+    } else if (existUser.role === UserRole.Contractor) {
+      return fillObject(ContractorUserRdo, existUser);
+    }
   }
 
   @UseGuards(JwtRefreshGuard)
@@ -72,5 +83,32 @@ export class AuthenticationController {
   })
   public async refreshToken(@Req() { user }: RequestWithUser) {
     return this.authService.createUserToken(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User has been successfully updated.'
+  })
+  @Patch(':id')
+  async update(@Param('id', MongoidValidationPipe) id: string, @Body() dto: UpdateUserDto) {
+    const updatedUser = await this.authService.update(id, dto);
+    if (updatedUser.role === UserRole.Customer) {
+      return fillObject(CustomerUserRdo, updatedUser);
+    } else if (updatedUser.role === UserRole.Contractor) {
+      return fillObject(ContractorUserRdo, updatedUser);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Password has been successfully updated.'
+  })
+  @HttpCode(HttpStatus.OK)
+  @Patch('password/:id')
+  async updatePassword(@Param('id', MongoidValidationPipe) id: string, @Body() dto: ChangeUserPasswordDto) {
+    return await this.authService.updatePassword(id, dto);
   }
 }

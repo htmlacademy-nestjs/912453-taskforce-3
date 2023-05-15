@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "name": "Keks",
-  "email": "keks5@gmail.com",
+  "email": "keks6@gmail.com",
   "city": "Moscow",
   "password": "qwerty",
   "role": "customer",
@@ -14,8 +14,8 @@ Content-Type: application/json
 ###
 
 # Get user by ID
-GET http://localhost:3000/api/auth/645fc8ae8995b48872194347 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDVmYzhhZTg5OTViNDg4NzIxOTQzNDciLCJlbWFpbCI6Imtla3NAZ21haWwuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwibmFtZSI6Iktla3MiLCJpYXQiOjE2ODQwOTY3MDUsImV4cCI6MTY4NDA5NzMwNX0.6D2a_DqIEutJ6cy_N3iHpXiQeY2TYRHB0OKpYBEuOkI
+GET http://localhost:3000/api/auth/64626979f9bc68e3cd2f35b7 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDYyNjk3OWY5YmM2OGUzY2QyZjM1YjciLCJlbWFpbCI6Imtla3M2QGdtYWlsLmNvbSIsInJvbGUiOiJjdXN0b21lciIsIm5hbWUiOiJLZWtzIiwiaWF0IjoxNjg0MTcxMTcxLCJleHAiOjE2ODQxNzE3NzF9.C0P9o7NwgvgSxXZINFkbnrtKsYKhLnT3W07YSbka7JE
 
 ###
 
@@ -24,7 +24,7 @@ POST http://localhost:3000/api/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "keks@gmail.com",
+  "email": "keks6@gmail.com",
   "password": "qwerty"
 }
 

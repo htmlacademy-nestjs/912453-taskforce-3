@@ -70,17 +70,4 @@ export class TaskController {
     const updatedTask = await this.taskService.updateTaskStatus(taskId, dto);
     return fillObject(TaskRdo, updatedTask);
   }
-
-  // @ApiResponse({
-  //   status: HttpStatus.OK,
-  //   description: 'Новая задача успешно создана.',
-  //   type: TaskRdo
-  // })
-  // @Post('new')
-  // public async create(@Body() dto: CreateTaskDto) {
-  //   const newTask = await this.taskService.createTask(dto);
-  //   console.log(newTask);
-  //   return fillObject(TaskRdo, newTask);
-  // }
-
 }

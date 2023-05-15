@@ -1,4 +1,11 @@
-import {ConflictException, Inject, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException
+} from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
 import {TokenPayloadInterface, UserInterface} from '@project/shared/app-types';
 import dayjs from 'dayjs';
@@ -12,6 +19,8 @@ import {JwtService} from '@nestjs/jwt';
 import {RefreshTokenService} from '../refresh-token/refresh-token.service';
 import {createJWTPayload} from '../../../../../libs/shared/app-types/src/lib/jwt';
 import * as crypto from 'crypto';
+import {UpdateUserDto} from './dto/update-user.dto';
+import {ChangeUserPasswordDto} from './dto/change-user-password.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -67,6 +76,35 @@ export class AuthenticationService {
 
   public async getUser(id: string) {
     return this.userRepository.findById(id);
+  }
+
+  async update(id: string, dto: UpdateUserDto) {
+    const existUser = await this.userRepository.findById(id);
+
+    if (!existUser) {
+      throw new NotFoundException(USER_EXCEPTIONS.UserNotFound);
+    }
+
+    const userEntity = new UserEntity({...existUser, ...dto});
+    return await this.userRepository.update(id, userEntity);
+  }
+
+  public async updatePassword(id: string, dto: ChangeUserPasswordDto) {
+    const {password, newPassword} = dto;
+    const existUser =  await this.userRepository.findById(id);
+    if (!existUser) {
+      throw new NotFoundException(USER_EXCEPTIONS.UserNotFound);
+    }
+
+    const userEntity = await new UserEntity(existUser);
+    const isPassword = await userEntity.comparePassword(password);
+
+    if (!isPassword) {
+      throw new ForbiddenException(USER_EXCEPTIONS.UserForbidden);
+    }
+
+    await userEntity.setPassword(newPassword);
+    return this.userRepository.update(id, userEntity);
   }
 
   public async createUserToken(user: UserInterface) {

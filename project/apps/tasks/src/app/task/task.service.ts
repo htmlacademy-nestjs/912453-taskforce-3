@@ -7,10 +7,7 @@ import {TaskRepository} from './task.repository';
 import {CategoryService} from '../category/category.service';
 import {TagService} from '../tag/tag.service';
 import {UpdateTaskStatusDto} from './dto/update-task-status.dto';
-import {TASK_DEFAULT,
-  // DEFAULT_SORT_DIRECTION, DEFAULT_SORT_TYPE, DEFAULT_TASKS_LIMIT,
-  EXCEPTION
-} from './task.constant';
+import {TASK_DEFAULT, EXCEPTION} from './task.constant';
 
 const TAGS_MAX_COUNT = 5;
 

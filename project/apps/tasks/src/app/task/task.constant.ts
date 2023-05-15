@@ -11,10 +11,6 @@ export const TASK_DEFAULT = {
   SORT_DIRECTION: SortDirection.desc,
   SORT_TYPE:SortType.CreatedAt
 };
-// export const MAX_TAGS_NUMBER = 5;
-// export const DEFAULT_SORT_DIRECTION = 'desc';
-// export const DEFAULT_TASKS_LIMIT = 25;
-// export const DEFAULT_SORT_TYPE = SortType.CreatedAt;
 
 export const TASK_FIELD = {
   MinTitle: 20,
