@@ -7,7 +7,7 @@ import {TaskRepository} from './task.repository';
 import {CategoryService} from '../category/category.service';
 import {TagService} from '../tag/tag.service';
 import {UpdateTaskStatusDto} from './dto/update-task-status.dto';
-import {DEFAULT_SORT_DIRECTION, DEFAULT_SORT_TYPE, DEFAULT_TASKS_LIMIT, EXCEPTION} from './task.constant';
+import {TASK_DEFAULT, EXCEPTION} from './task.constant';
 
 const TAGS_MAX_COUNT = 5;
 
@@ -26,6 +26,7 @@ export class TaskService {
     const taskEntity = new TaskEntity({
       ...dto,
       categoryId: category.categoryId,
+      // category,
       tags,
       comments: [],
       responses: [],
@@ -40,9 +41,9 @@ export class TaskService {
   }
 
   async getTasksList(query: TaskQuery): Promise<TaskInterface[]> {
-    query.sortType = query.sortType ?? DEFAULT_SORT_TYPE;
-    query.sortDirection = query.sortDirection ?? DEFAULT_SORT_DIRECTION;
-    query.limit = query.limit ?? DEFAULT_TASKS_LIMIT;
+    query.sortType = query.sortType ?? TASK_DEFAULT.SORT_TYPE;
+    query.sortDirection = query.sortDirection ?? TASK_DEFAULT.SORT_DIRECTION;
+    query.limit = query.limit ?? TASK_DEFAULT.TASKS_LIMIT;
     return this.taskRepository.find(query);
   }
 

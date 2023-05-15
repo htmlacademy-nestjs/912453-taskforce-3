@@ -1,13 +1,26 @@
-import {ConflictException, Inject, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException
+} from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
-import {UserInterface} from '@project/shared/app-types';
+import {TokenPayloadInterface, UserInterface} from '@project/shared/app-types';
 import dayjs from 'dayjs';
-import {AUTH_USER_EXISTS, AUTH_USER_NOT_FOUND, AUTH_USER_PASSWORD_WRONG} from './authentication.constant';
+import {USER_EXCEPTIONS} from './authentication.constant';
 import {UserEntity} from '../user/user.entity';
 import {LoginUserDto} from './dto/login-user.dto';
-import {dbConfig} from '@project/config/config-users';
+import {dbConfig, jwtConfig} from '@project/config/config-users';
 import {ConfigType} from '@nestjs/config';
 import {UserRepository} from '../user/user.repository';
+import {JwtService} from '@nestjs/jwt';
+import {RefreshTokenService} from '../refresh-token/refresh-token.service';
+import {createJWTPayload} from '../../../../../libs/shared/app-types/src/lib/jwt';
+import * as crypto from 'crypto';
+import {UpdateUserDto} from './dto/update-user.dto';
+import {ChangeUserPasswordDto} from './dto/change-user-password.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -16,11 +29,10 @@ export class AuthenticationService {
 
     @Inject(dbConfig.KEY)
     private readonly databaseConfig: ConfigType<typeof dbConfig>,
-  ) {
-    // Извлекаем настройки из конфигурации
-    console.log(databaseConfig.host);
-    console.log(databaseConfig.user);
-  }
+    private readonly jwtService: JwtService,
+    @Inject (jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
+    private readonly refreshTokenService: RefreshTokenService
+  ) {}
 
   public async register(dto: CreateUserDto): Promise<UserInterface> {
     const {email, name, about, role, password, city, dateBirth, avatar} = dto;
@@ -36,7 +48,7 @@ export class AuthenticationService {
       .findByEmail(email);
 
     if (existUser) {
-      throw new ConflictException(AUTH_USER_EXISTS);
+      throw new ConflictException(USER_EXCEPTIONS.UserEmailExist);
     }
 
     const userEntity = await new UserEntity(user)
@@ -51,12 +63,12 @@ export class AuthenticationService {
     const existUser = await this.userRepository.findByEmail(email);
 
     if (!existUser) {
-      throw new NotFoundException(AUTH_USER_NOT_FOUND);
+      throw new NotFoundException(USER_EXCEPTIONS.UserNotFound);
     }
 
     const userEntity = new UserEntity(existUser);
     if (!await userEntity.comparePassword(password)) {
-      throw new UnauthorizedException(AUTH_USER_PASSWORD_WRONG);
+      throw new UnauthorizedException(USER_EXCEPTIONS.UserPasswordWrong);
     }
 
     return userEntity.toObject();
@@ -64,5 +76,48 @@ export class AuthenticationService {
 
   public async getUser(id: string) {
     return this.userRepository.findById(id);
+  }
+
+  async update(id: string, dto: UpdateUserDto) {
+    const existUser = await this.userRepository.findById(id);
+
+    if (!existUser) {
+      throw new NotFoundException(USER_EXCEPTIONS.UserNotFound);
+    }
+
+    const userEntity = new UserEntity({...existUser, ...dto});
+    return await this.userRepository.update(id, userEntity);
+  }
+
+  public async updatePassword(id: string, dto: ChangeUserPasswordDto) {
+    const {password, newPassword} = dto;
+    const existUser =  await this.userRepository.findById(id);
+    if (!existUser) {
+      throw new NotFoundException(USER_EXCEPTIONS.UserNotFound);
+    }
+
+    const userEntity = await new UserEntity(existUser);
+    const isPassword = await userEntity.comparePassword(password);
+
+    if (!isPassword) {
+      throw new ForbiddenException(USER_EXCEPTIONS.UserForbidden);
+    }
+
+    await userEntity.setPassword(newPassword);
+    return this.userRepository.update(id, userEntity);
+  }
+
+  public async createUserToken(user: UserInterface) {
+    const accessTokenPayload = createJWTPayload(user);
+    const refreshTokenPayload = { ...accessTokenPayload, tokenId: crypto.randomUUID() };
+    await this.refreshTokenService.createRefreshSession(refreshTokenPayload)
+
+    return {
+      accessToken: await this.jwtService.signAsync(accessTokenPayload),
+      refreshToken: await this.jwtService.signAsync(refreshTokenPayload, {
+        secret: this.jwtOptions.refreshTokenSecret,
+        expiresIn: this.jwtOptions.refreshTokenExpiresIn
+      })
+    }
   }
 }
