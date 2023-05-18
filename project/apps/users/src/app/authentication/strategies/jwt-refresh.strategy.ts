@@ -3,7 +3,7 @@ import {PassportStrategy} from '@nestjs/passport';
 import {ExtractJwt, Strategy} from 'passport-jwt';
 import {ConfigType} from '@nestjs/config';
 import {jwtConfig} from '@project/config/config-users';
-import {RefreshTokenPayloadInterface, TokenPayloadInterface} from '@project/shared/app-types';
+import {RefreshTokenPayloadInterface} from '@project/shared/app-types';
 import {AuthenticationService} from '../authentication.service';
 import {TokenNotExistsException} from '../exceptions/token-not-exists.exception';
 import {RefreshTokenService} from '../../refresh-token/refresh-token.service';

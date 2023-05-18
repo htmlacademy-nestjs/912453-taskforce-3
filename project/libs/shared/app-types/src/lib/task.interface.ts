@@ -1,5 +1,4 @@
 import {
-  CategoryInterface,
   CommentInterface,
   TagInterface,
   ResponseInterface,
@@ -10,7 +9,6 @@ export interface TaskInterface {
   id?: number;
   title: string;
   description: string;
-  // category?: CategoryInterface;
   categoryId: number;
   price?: number;
   dueDate?: Date;

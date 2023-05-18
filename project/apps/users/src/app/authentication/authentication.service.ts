@@ -7,7 +7,7 @@ import {
   UnauthorizedException
 } from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
-import {TokenPayloadInterface, UserInterface} from '@project/shared/app-types';
+import {UserInterface} from '@project/shared/app-types';
 import dayjs from 'dayjs';
 import {USER_EXCEPTIONS} from './authentication.constant';
 import {UserEntity} from '../user/user.entity';

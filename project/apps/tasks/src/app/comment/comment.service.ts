@@ -36,8 +36,4 @@ export class CommentService {
     await this.commentRepository.destroy(id);
     await this.taskService.incrementCommentsCounter(taskId, -1);
   }
-
-  public async deleteAllCommentsWithTask(taskId: number): Promise<void> {
-    return  await this.commentRepository.deleteAllInTask(taskId);
-  }
 }

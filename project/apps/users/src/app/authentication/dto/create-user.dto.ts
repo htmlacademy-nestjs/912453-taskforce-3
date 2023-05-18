@@ -1,6 +1,6 @@
 import {City, UserRole} from '@project/shared/app-types';
 import {ApiProperty} from '@nestjs/swagger';
-import {IsEmail, IsISO8601, IsString, Length, MaxLength} from 'class-validator';
+import {IsEmail, IsISO8601, IsString, Length} from 'class-validator';
 import {
   USER_FIELDS,
   USER_VALIDATION_ERRORS

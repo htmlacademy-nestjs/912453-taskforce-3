@@ -1,5 +1,4 @@
 import {CommentInterface} from '@project/shared/app-types';
-import dayjs from 'dayjs';
 
 export class CommentEntity implements CommentInterface {
   public id?: number;
@@ -10,7 +9,6 @@ export class CommentEntity implements CommentInterface {
 
   constructor(comment: CommentInterface) {
     this.fillEntity(comment);
-    // this.createdAt = dayjs().toDate();
   }
 
   public toObject() {
@@ -22,7 +20,7 @@ export class CommentEntity implements CommentInterface {
     this.comment = comment.comment;
     this.taskId = comment.taskId;
     this.userId = comment.userId;
-    // this.createdAt = comment.createdAt;
+    this.createdAt = comment.createdAt;
   }
 
 }

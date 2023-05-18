@@ -16,12 +16,12 @@ export default registerAs('application', (): ApplicationConfig => {
     port: parseInt(process.env.PORT || DEFAULT_PORT.toString(), 10),
   };
 
-  const appEnviroment = plainToInstance(AppEnvironment, config,
+  const appEnvironment = plainToInstance(AppEnvironment, config,
     { enableImplicitConversion: true}
   );
 
   const errors = validateSync(
-    appEnviroment, {
+    appEnvironment, {
       skipMissingProperties: false
     }
   );

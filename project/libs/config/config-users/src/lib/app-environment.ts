@@ -1,5 +1,4 @@
-import {IsEnum, IsNumber, IsString, Max, Min} from 'class-validator';
-import {ApplicationConfig} from './config/app.config';
+import {IsEnum, IsNumber, Max, Min} from 'class-validator';
 
 const MIN_PORT = 0;
 const MAX_PORT = 65535;
@@ -23,9 +22,6 @@ export class AppEnvironment {
   @Max(MAX_PORT)
   public port: number;
 
-  // @IsString({
-  //   message: EnvValidationMessage.EnvRequired
-  // })
   @IsEnum(EnvType)
   public environment: EnvType;
 }

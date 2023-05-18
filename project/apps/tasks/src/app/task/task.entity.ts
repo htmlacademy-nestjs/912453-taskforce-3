@@ -1,7 +1,7 @@
 import {
   CommentInterface, TagInterface,
   TaskInterface,
-  ResponseInterface, CategoryInterface,
+  ResponseInterface,
 } from '@project/shared/app-types';
 import {EntityInterface} from '@project/util/util-types';
 import {City, TaskStatus} from '@prisma/client';
@@ -12,7 +12,6 @@ export class TaskEntity implements EntityInterface<TaskEntity>, TaskInterface {
   public title: string;
   public description: string;
   public categoryId: number;
-  // public category: CategoryInterface;
   public price: number;
   public dueDate: Date;
   public image?: string;
@@ -46,7 +45,6 @@ export class TaskEntity implements EntityInterface<TaskEntity>, TaskInterface {
   this.title = task.title;
   this.description = task.description;
   this.categoryId = task.categoryId;
-  // this.category = task.category;
   this.price = task.price;
   this.dueDate = task.dueDate ? dayjs(task.dueDate).toDate() : dayjs().toDate();
   this.image = task.image;
