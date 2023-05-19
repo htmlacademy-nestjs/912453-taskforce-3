@@ -26,7 +26,6 @@ export class TaskService {
     const taskEntity = new TaskEntity({
       ...dto,
       categoryId: category.categoryId,
-      // category,
       tags,
       comments: [],
       responses: [],

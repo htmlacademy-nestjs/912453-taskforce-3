@@ -1,6 +1,5 @@
-import {Body, Controller, Get, HttpStatus, Param, Post, Res} from '@nestjs/common';
+import {Body, Controller, Get, HttpStatus, Param, Post} from '@nestjs/common';
 import {ResponseService} from './response.service';
-import {TaskService} from '../task/task.service';
 import {ApiResponse, ApiTags} from '@nestjs/swagger';
 import {ResponseRdo} from './rdo/response.rdo';
 import {fillObject} from '@project/util/util-core';
@@ -10,8 +9,7 @@ import {CreateResponseDto} from './dto/create-response.dto';
 @Controller('response')
 export class ResponseController {
   constructor(
-    private readonly responseService: ResponseService,
-    private readonly taskService: TaskService
+    private readonly responseService: ResponseService
   ) {}
 
   @ApiResponse({
@@ -55,7 +53,6 @@ export class ResponseController {
   })
   @Post('/accept/:id')
   async acceptResponse(@Param('id') id: string) {
-    // todo - check user role and authority
     const responseId = parseInt(id, 10);
     const acceptedResponse = await this.responseService.acceptResponse(responseId);
     return fillObject(ResponseRdo, acceptedResponse);

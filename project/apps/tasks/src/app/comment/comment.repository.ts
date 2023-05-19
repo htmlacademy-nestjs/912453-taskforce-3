@@ -59,9 +59,4 @@ export class CommentRepository implements CRUDRepositoryInterface<CommentEntity,
     });
   }
 
-  public async deleteAllInTask(taskId: number): Promise<void> {
-     this.prisma.comment.deleteMany({
-      where: {taskId}
-    });
-  }
 }

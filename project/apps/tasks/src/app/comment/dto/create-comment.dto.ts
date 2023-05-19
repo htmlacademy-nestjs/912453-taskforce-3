@@ -1,6 +1,7 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {IsNumber, IsString} from 'class-validator';
+import {IsNumber, IsString, Length} from 'class-validator';
 import {Transform} from 'class-transformer';
+import {COMMENT_LENGTH, COMMENT_VALIDATION_ERRORS} from '../comment.constant';
 
 export class CreateCommentDto {
   @ApiProperty({
@@ -8,8 +9,8 @@ export class CreateCommentDto {
     example: 'Что за тяги такие, бархатные тяги, ребята? Уффф. Кефтеме',
     required: true
   })
+  @Length(COMMENT_LENGTH.Min, COMMENT_LENGTH.Max, { message: COMMENT_VALIDATION_ERRORS.CommentLength })
   @IsString()
-
   public comment: string;
 
   @ApiProperty({
